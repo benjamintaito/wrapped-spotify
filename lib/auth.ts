@@ -14,7 +14,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         url: "https://accounts.spotify.com/authorize",
         params: { scope: SCOPES },
       },
-      redirectProxyUrl: "http://127.0.0.1:3000/api/auth/callback/spotify",
       checks: ["pkce", "state"],
     }),
   ],
