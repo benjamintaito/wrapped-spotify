@@ -1,4 +1,4 @@
-# 🎧 Wrapped — Tu año en música, todo el año
+# 🎧 Spotify Wrapped
 
 Dashboard personal estilo *Spotify Wrapped* que analiza tu historial de Spotify en cualquier momento del año: top canciones, top artistas, géneros dominantes, evolución de tus gustos y patrones de escucha por hora y día.
 
@@ -81,15 +81,3 @@ proxy.ts                    # Protege /dashboard (convención proxy de Next 16)
 - Los tokens de Spotify viven cifrados en la cookie de sesión (JWT de Auth.js); no hay base de datos.
 - Las respuestas de la API de Spotify no se cachean en el servidor (`cache: "no-store"`).
 - Scopes usados: `user-top-read`, `user-read-recently-played`, `user-read-private`.
-
-## Despliegue
-
-Funciona en [Vercel](https://vercel.com) sin configuración extra: define `AUTH_SECRET`, `SPOTIFY_CLIENT_ID` y `SPOTIFY_CLIENT_SECRET` en el proyecto y agrega `https://<tu-dominio>/api/auth/callback/spotify` como Redirect URI en Spotify.
-
-## Contribuir
-
-¡Las contribuciones son bienvenidas! Lee [CONTRIBUTING.md](CONTRIBUTING.md) para empezar.
-
-## Licencia
-
-[MIT](LICENSE)
