@@ -1,18 +1,19 @@
 {
-  "name": "spotify",
+  "name": "wrapped-spotify",
   "version": "0.1.0",
   "private": true,
+  "description": "Tu Spotify Wrapped, todo el año: dashboard con tus top canciones, artistas, géneros y evolución de gustos.",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev -H 127.0.0.1",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^1.8.0",
     "next": "16.2.4",
     "next-auth": "^5.0.0-beta.31",
     "react": "19.2.4",

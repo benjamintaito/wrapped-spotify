@@ -55,7 +55,7 @@ export function DashboardNav({ userName }: { userName?: string | null }) {
 
         <div className="p-3 border-t border-border">
           <button
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={() => signOut({ redirectTo: "/" })}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
           >
             <span>🚪</span>

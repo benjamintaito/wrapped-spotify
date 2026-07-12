@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArtistCard } from "@/components/ArtistCard"
 import { ArtistsSkeleton } from "@/components/TracksSkeleton"
+import { useApi } from "@/lib/useApi"
 import type { SpotifyArtist, TimeRange } from "@/lib/spotify"
 
 const RANGES: { value: TimeRange; label: string }[] = [
@@ -14,22 +15,11 @@ const RANGES: { value: TimeRange; label: string }[] = [
 
 export default function TopArtistsPage() {
   const [range, setRange] = useState<TimeRange>("medium_term")
-  const [artists, setArtists] = useState<SpotifyArtist[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    setLoading(true)
-    setError(null)
-    fetch(`/api/spotify/top-artists?time_range=${range}&limit=10`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) setArtists(data)
-        else setError(data.error ?? "Error al cargar artistas")
-      })
-      .catch(() => setError("Error de red"))
-      .finally(() => setLoading(false))
-  }, [range])
+  const { data, error, loading } = useApi<SpotifyArtist[]>(
+    `/api/spotify/top-artists?time_range=${range}&limit=10`,
+    "Error al cargar artistas"
+  )
+  const artists = data ?? []
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">

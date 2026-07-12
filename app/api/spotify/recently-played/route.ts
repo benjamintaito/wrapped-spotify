@@ -3,7 +3,7 @@ import { getRecentlyPlayed } from "@/lib/spotify"
 
 export async function GET() {
   const session = await auth()
-  if (!session?.accessToken) {
+  if (!session?.accessToken || session.error) {
     return Response.json({ error: "Unauthorized" }, { status: 401 })
   }
 
@@ -11,6 +11,6 @@ export async function GET() {
     const items = await getRecentlyPlayed(session.accessToken, 50)
     return Response.json(items)
   } catch (e) {
-    return Response.json({ error: (e as Error).message }, { status: 500 })
+    return Response.json({ error: (e as Error).message }, { status: 502 })
   }
 }

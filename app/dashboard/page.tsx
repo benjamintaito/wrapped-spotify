@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth"
-import { getTopTracks, getTopArtists, getRecentlyPlayed, computeTopGenres } from "@/lib/spotify"
+import { getTopTracks, getTopArtists, getRecentlyPlayed, computeTopGenres, msToMinutes } from "@/lib/spotify"
 import { StatCard } from "@/components/StatCard"
 import { TrackCard } from "@/components/TrackCard"
 import { ArtistCard } from "@/components/ArtistCard"
@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   const genres = computeTopGenres(artists)
   const uniqueArtistIds = new Set(recentItems.flatMap((i) => i.track.artists.map((a) => a.id)))
   const totalMs = recentItems.reduce((s, i) => s + i.track.duration_ms, 0)
-  const minutes = Math.round(totalMs / 60000)
+  const minutes = msToMinutes(totalMs)
 
   const firstName = session?.user?.name?.split(" ")[0] ?? "de vuelta"
 
@@ -54,7 +54,7 @@ export default async function DashboardPage() {
           <StatCard
             label="Artista #1"
             value={artists[0]?.name ?? "—"}
-            sub={`${artists[0]?.followers.total.toLocaleString()} seguidores`}
+            sub={artists[0] ? `${artists[0].followers.total.toLocaleString()} seguidores` : undefined}
             accent
           />
           <StatCard

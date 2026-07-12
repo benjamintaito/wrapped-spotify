@@ -50,7 +50,7 @@ export function ArtistCard({ artist, rank }: ArtistCardProps) {
 
       <div className="text-right shrink-0">
         <p className="text-xs text-muted-foreground">
-          {(artist.followers.total / 1000).toFixed(0)}k
+          {new Intl.NumberFormat("es", { notation: "compact" }).format(artist.followers.total)}
         </p>
         <p className="text-xs text-muted-foreground">seguidores</p>
       </div>

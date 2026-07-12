@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TrackCard } from "@/components/TrackCard"
 import { TracksSkeleton } from "@/components/TracksSkeleton"
+import { useApi } from "@/lib/useApi"
 import type { SpotifyTrack, TimeRange } from "@/lib/spotify"
 
 const RANGES: { value: TimeRange; label: string }[] = [
@@ -14,22 +15,11 @@ const RANGES: { value: TimeRange; label: string }[] = [
 
 export default function TopTracksPage() {
   const [range, setRange] = useState<TimeRange>("medium_term")
-  const [tracks, setTracks] = useState<SpotifyTrack[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    setLoading(true)
-    setError(null)
-    fetch(`/api/spotify/top-tracks?time_range=${range}&limit=10`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) setTracks(data)
-        else setError(data.error ?? "Error al cargar canciones")
-      })
-      .catch(() => setError("Error de red"))
-      .finally(() => setLoading(false))
-  }, [range])
+  const { data, error, loading } = useApi<SpotifyTrack[]>(
+    `/api/spotify/top-tracks?time_range=${range}&limit=10`,
+    "Error al cargar canciones"
+  )
+  const tracks = data ?? []
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">

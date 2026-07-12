@@ -2,6 +2,18 @@ const API = "https://api.spotify.com/v1"
 
 export type TimeRange = "short_term" | "medium_term" | "long_term"
 
+const TIME_RANGES: TimeRange[] = ["short_term", "medium_term", "long_term"]
+
+export function parseTimeRange(value: string | null): TimeRange {
+  return TIME_RANGES.includes(value as TimeRange) ? (value as TimeRange) : "medium_term"
+}
+
+export function parseLimit(value: string | null, fallback = 10): number {
+  const n = Number(value ?? fallback)
+  if (!Number.isInteger(n)) return fallback
+  return Math.min(Math.max(n, 1), 50)
+}
+
 export interface SpotifyImage {
   url: string
   width: number
@@ -34,9 +46,10 @@ export interface SpotifyRecentlyPlayed {
 }
 
 async function spotifyFetch<T>(path: string, token: string): Promise<T> {
+  // Per-user data: never store it in the shared data cache.
   const res = await fetch(`${API}${path}`, {
     headers: { Authorization: `Bearer ${token}` },
-    next: { revalidate: 300 },
+    cache: "no-store",
   })
   if (res.status === 429) {
     throw new Error("Rate limited by Spotify. Try again in a moment.")

@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { StatCard } from "@/components/StatCard"
 import { Skeleton } from "@/components/ui/skeleton"
-import type { SpotifyRecentlyPlayed } from "@/lib/spotify"
+import { useApi } from "@/lib/useApi"
+import { msToMinutes, type SpotifyRecentlyPlayed } from "@/lib/spotify"
 
 const DAYS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
 
@@ -33,20 +33,11 @@ function formatHour(h: number): string {
 }
 
 export default function HistoryPage() {
-  const [items, setItems] = useState<SpotifyRecentlyPlayed[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetch("/api/spotify/recently-played")
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) setItems(data)
-        else setError(data.error ?? "Error al cargar historial")
-      })
-      .catch(() => setError("Error de red"))
-      .finally(() => setLoading(false))
-  }, [])
+  const { data, error, loading } = useApi<SpotifyRecentlyPlayed[]>(
+    "/api/spotify/recently-played",
+    "Error al cargar historial"
+  )
+  const items = data ?? []
 
   if (loading) {
     return (
@@ -84,7 +75,7 @@ export default function HistoryPage() {
 
   const uniqueArtists = new Set(items.flatMap((i) => i.track.artists.map((a) => a.id)))
   const totalMs = items.reduce((s, i) => s + i.track.duration_ms, 0)
-  const minutes = Math.round(totalMs / 60000)
+  const minutes = msToMinutes(totalMs)
 
   const trackCounts: Record<string, { name: string; artist: string; count: number }> = {}
   for (const item of items) {

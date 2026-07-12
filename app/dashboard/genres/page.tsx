@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GenreBar } from "@/components/GenreBar"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useApi } from "@/lib/useApi"
 import { computeTopGenres, type SpotifyArtist, type TimeRange } from "@/lib/spotify"
 
 const RANGES: { value: TimeRange; label: string }[] = [
@@ -14,23 +15,11 @@ const RANGES: { value: TimeRange; label: string }[] = [
 
 export default function GenresPage() {
   const [range, setRange] = useState<TimeRange>("medium_term")
-  const [genres, setGenres] = useState<{ genre: string; count: number }[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    setLoading(true)
-    setError(null)
-    fetch(`/api/spotify/top-artists?time_range=${range}&limit=20`)
-      .then((r) => r.json())
-      .then((data: SpotifyArtist[]) => {
-        if (Array.isArray(data)) setGenres(computeTopGenres(data).slice(0, 15))
-        else setError((data as { error?: string }).error ?? "Error al cargar géneros")
-      })
-      .catch(() => setError("Error de red"))
-      .finally(() => setLoading(false))
-  }, [range])
-
+  const { data, error, loading } = useApi<SpotifyArtist[]>(
+    `/api/spotify/top-artists?time_range=${range}&limit=20`,
+    "Error al cargar géneros"
+  )
+  const genres = data ? computeTopGenres(data).slice(0, 15) : []
   const max = genres[0]?.count ?? 1
 
   return (

@@ -4,7 +4,7 @@ import { DashboardNav } from "@/components/DashboardNav"
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
-  if (!session) redirect("/")
+  if (!session || session.error) redirect("/")
 
   return (
     <div className="flex min-h-screen">

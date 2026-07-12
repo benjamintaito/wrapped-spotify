@@ -3,7 +3,8 @@ import { redirect } from "next/navigation"
 
 export default async function HomePage() {
   const session = await auth()
-  if (session) redirect("/dashboard")
+  // Sessions with a failed token refresh stay here so the user can re-connect.
+  if (session && !session.error) redirect("/dashboard")
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6">
